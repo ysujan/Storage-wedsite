@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Storage - Yaswanth Sujan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient( rgb(255, 255, 255));
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: rgb(239, 202, 55);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 10px solid grey;
+    }
+
+    .logo {
+      font-size: 40px;
+      color: blue;
+      background: linear-gradient( rgb(97, 158, 200), rgb(103, 193, 113));
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin-top: 10px;
+    }
+
+    main {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .upload-box {
+      margin-bottom: 20px;
+    }
+
+    .file-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .file-box {
+      background-color: white;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      width: 200px;
+      text-align: center;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .file-box img,
+    .file-box video {
+      max-width: 100%;
+      max-height: 120px;
+      border-radius: 5px;
+    }
+
+    .btn {
+      margin: 5px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .download-btn {
+      background-color: blue;
+    }
+
+    .delete-btn {
+      background-color: red;
+    }
+
+    .file-name {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">YS</div>
+    <h1>Yaswanth Sujan Storage</h1>
+  </header>
+
+  <main>
+    <div class="upload-box">
+      <input type="file" id="fileInput" multiple>
+    </div>
+    <div class="file-preview" id="filePreview"></div>
+  </main>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const filePreview = document.getElementById("filePreview");
+
+    fileInput.addEventListener("change", function () {
+      const files = Array.from(fileInput.files);
+
+      files.forEach(file => {
+        const fileBox = document.createElement("div");
+        fileBox.className = "file-box";
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          let previewElement;
+
+          if (file.type.startsWith("image/")) {
+            previewElement = document.createElement("img");
+            previewElement.src = e.target.result;
+          } else if (file.type.startsWith("video/")) {
+            previewElement = document.createElement("video");
+            previewElement.src = e.target.result;
+            previewElement.controls = true;
+          } else {
+            previewElement = document.createElement("div");
+            previewElement.innerHTML = "📄";
+            previewElement.style.fontSize = "60px";
+          }
+
+          const fileName = document.createElement("div");
+          fileName.className = "file-name";
+          fileName.textContent = file.name;
+
+          const downloadBtn = document.createElement("button");
+          downloadBtn.className = "btn download-btn";
+          downloadBtn.textContent = "Download";
+          downloadBtn.onclick = () => {
+            const link = document.createElement("a");
+            link.href = e.target.result;
+            link.download = file.name;
+            link.click();
+          };
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "btn delete-btn";
+          deleteBtn.textContent = "Delete";
+          deleteBtn.onclick = () => {
+            fileBox.remove();
+          };
+
+          fileBox.appendChild(previewElement);
+          fileBox.appendChild(fileName);
+          fileBox.appendChild(downloadBtn);
+          fileBox.appendChild(deleteBtn);
+
+          filePreview.appendChild(fileBox);
+        };
+
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+
+</body>
+</html>
